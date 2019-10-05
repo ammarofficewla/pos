@@ -30,13 +30,11 @@ class PosOrder(models.Model):
         string='Refund Orders Quantity',
     )
 
-    @api.multi
     @api.depends('refund_order_ids')
     def _compute_refund_order_qty(self):
         for order in self:
             order.refund_order_qty = len(order.refund_order_ids)
 
-    @api.multi
     def action_view_refund_orders(self):
         self.ensure_one()
 
@@ -50,11 +48,9 @@ class PosOrder(models.Model):
             action['domain'] = [('id', 'in', self.refund_order_ids.ids)]
         return action
 
-    @api.multi
     def refund(self):
         return super(PosOrder, self.with_context(refund=True)).refund()
 
-    @api.multi
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
         self.ensure_one()

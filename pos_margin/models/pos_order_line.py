@@ -19,7 +19,6 @@ class PosOrderLine(models.Model):
         multi='multi_margin', digits=dp.get_precision('Product Price'))
 
     # Compute Section
-    @api.multi
     @api.depends('product_id', 'qty', 'price_subtotal')
     def _compute_multi_margin(self):
         for line in self.filtered('product_id'):
@@ -31,7 +30,7 @@ class PosOrderLine(models.Model):
     def _get_purchase_price(self, line):
         # We call _get_purchase_price from sale_margin module, to reuse
         # computation that handles multi currencies context and UoM
-        SaleOrderLine = self.env['sale.order.line']
+        saleorderline = self.env['sale.order.line']
 
         # if used in combination with module which does add the uom_id to line
         uom = hasattr(line, 'uom_id') and line.uom_id\
